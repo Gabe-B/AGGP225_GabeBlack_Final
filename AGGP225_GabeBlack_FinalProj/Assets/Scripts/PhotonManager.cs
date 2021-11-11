@@ -11,12 +11,13 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 {
 	public static PhotonManager instance { get; private set; }
 
+	public string username;
 	public int MAX_PLAYERS = 4;
 
 	RoomOptions roomOptions = new RoomOptions();
 
 	string gameVersion = "1";
-	string gameLevel = "Chat Room";
+	string gameLevel = "Lobby";
 
 	void Awake()
 	{
@@ -52,11 +53,13 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 		{
 			PhotonNetwork.ConnectUsingSettings();
 			PhotonNetwork.GameVersion = gameVersion;
-			//connectedText.SetActive(true);
+			MainMenu.instance.connectedText.SetActive(true);
+			MainMenu.instance.hasBeenConnected = true;
 		}
 		else
 		{
-			//connectedText.SetActive(false);
+			MainMenu.instance.connectedText.SetActive(true);
+			MainMenu.instance.hasBeenConnected = true;
 		}
 	}
 
@@ -64,12 +67,16 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 	{
 		Debug.Log("[PhotonManager][CreateRoom][Trying to create room]");
 
+		PhotonNetwork.NickName = MainMenu.instance.inputField.text;
+
 		PhotonNetwork.CreateRoom("Test Room", roomOptions);
 	}
 
 	public void JoinRandomRoom()
 	{
 		Debug.Log("[PhotonManager][JoinRandomRoom][Trying to join random room]");
+
+		PhotonNetwork.NickName = MainMenu.instance.inputField.text;
 
 		PhotonNetwork.JoinRandomRoom();
 	}
@@ -123,7 +130,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 	{
 		Cursor.lockState = CursorLockMode.None;
 		Cursor.visible = true;
-		SceneManager.LoadScene("Main Menu");
+		SceneManager.LoadScene("MainMenu");
 	}
 
 	void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -133,5 +140,15 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 			//PhotonNetwork.Destroy(gameObject);
 		}
 	}
+	#endregion
+
+	#region RPC's
+
+		[PunRPC]
+		void UsernameRPC(string _username, string _chat)
+		{
+			Lobby.instance.field.text += _username + ":	" + _chat + "\n";
+		}
+
 	#endregion
 }
