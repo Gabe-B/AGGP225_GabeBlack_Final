@@ -10,11 +10,17 @@ using UnityEngine.UI;
 public class PhotonManager : MonoBehaviourPunCallbacks
 {
 	public static PhotonManager instance { get; private set; }
+	public RoomOptions roomOptions = new RoomOptions();
+
+
+	public TMP_InputField red;
+	public TMP_InputField green;
+	public TMP_InputField blue;
+	public GameObject panel;
 
 	public string username;
 	public int MAX_PLAYERS = 4;
-
-	RoomOptions roomOptions = new RoomOptions();
+	public float RED, GREEN, BLUE;
 
 	string gameVersion = "1";
 	string gameLevel = "Lobby";
@@ -33,7 +39,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 			DontDestroyOnLoad(this);
 		}
 
-		SceneManager.sceneLoaded += OnSceneLoaded;
+		//SceneManager.sceneLoaded += OnSceneLoaded;
 
 		PhotonNetwork.AutomaticallySyncScene = true;
 		roomOptions.MaxPlayers = (byte)MAX_PLAYERS;
@@ -85,7 +91,55 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 	{
 		Debug.Log("[PhotonManager][JoinChatroom][Trying to join random room]");
 
+		PhotonNetwork.NickName = MainMenu.instance.inputField.text;
+
 		PhotonNetwork.JoinRandomRoom();
+	}
+
+	public void ChangeColor()
+	{
+		float redVal, greenVal, blueVal;
+
+		if (!string.IsNullOrEmpty(red.ToString()))
+		{
+			float.TryParse(red.text.ToString(), out float resultRed);
+			redVal = resultRed;
+			RED = redVal;
+			red.text = "";
+		}
+		else
+		{
+			redVal = 0;
+			RED = 0;
+		}
+
+		if (!string.IsNullOrEmpty(green.ToString()))
+		{
+			float.TryParse(green.text.ToString(), out float resultGreen);
+			greenVal = resultGreen;
+			GREEN = greenVal;
+			green.text = "";
+		}
+		else
+		{
+			greenVal = 0;
+			GREEN = 0;
+		}
+
+		if (!string.IsNullOrEmpty(blue.ToString()))
+		{
+			float.TryParse(blue.text.ToString(), out float resultBlue);
+			blueVal = resultBlue;
+			BLUE = blueVal;
+			blue.text = "";
+		}
+		else
+		{
+			blueVal = 0;
+			BLUE = 0;
+		}
+
+		panel.GetComponent<Image>().color = new Color32((byte)redVal, (byte)greenVal, (byte)blueVal, (byte)255);
 	}
 
 	#region Photon Callbacks
@@ -143,12 +197,19 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 	#endregion
 
 	#region RPC's
+	[PunRPC]
+	void LobbyChatRPC(string _username, string _chat)
+	{
+		Lobby.instance.field.text += _username + ":	" + _chat + "\n";
+	}
 
-		[PunRPC]
-		void UsernameRPC(string _username, string _chat)
+	[PunRPC]
+	void UpdateLobbyTimer(float t)
+	{
+		foreach (Lobby l in FindObjectsOfType<Lobby>())
 		{
-			Lobby.instance.field.text += _username + ":	" + _chat + "\n";
+			l.timer.text = Mathf.Round(t).ToString();
 		}
-
+	}
 	#endregion
 }
