@@ -13,6 +13,9 @@ public class GameManager : MonoBehaviour
     public List<GameObject> spawnPoints = new List<GameObject>();
     List<Player> players = new List<Player>();
     public TMP_InputField input;
+    public int score;
+
+    int numSpectators = 0;
 
 	public static GameManager instance { get; set; }
 
@@ -52,6 +55,20 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        foreach(Player p in FindObjectsOfType<Player>())
+		{
+            if(p.isSpectator)
+			{
+                numSpectators++;
+			}
+		}
+
+        if(numSpectators == PhotonNetwork.CurrentRoom.PlayerCount)
+		{
+            if(PhotonNetwork.IsMasterClient)
+			{
+                PhotonNetwork.LoadLevel("Lobby");
+			}
+		}
     }
 }

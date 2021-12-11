@@ -28,6 +28,10 @@ public class Player : MonoBehaviour
 	public bool isSpectator = false;
 	public bool canMove = true;
 
+	public TMP_Text place;
+
+	public ExitGames.Client.Photon.Hashtable _Placement = new ExitGames.Client.Photon.Hashtable();
+
 	[SerializeField]
 	bool groundCheck;
 
@@ -165,6 +169,22 @@ public class Player : MonoBehaviour
 				if (Input.GetKeyDown(KeyCode.Escape))
 				{
 					pauseMenu.SetActive(true);
+				}
+
+
+				if (Input.GetKeyDown(KeyCode.T))
+				{
+					GameManager.instance.input.interactable = true;
+					isChatting = true;
+				}
+
+				if (Input.GetKeyDown(KeyCode.Return) && isChatting)
+				{
+					gameObject.GetPhotonView().RPC("ChatRPC", RpcTarget.AllBuffered, PhotonNetwork.NickName, GameManager.instance.input.text);
+					Debug.Log(GameManager.instance.input.text);
+					GameManager.instance.input.text = "";
+					GameManager.instance.input.interactable = false;
+					isChatting = false;
 				}
 			}
 
