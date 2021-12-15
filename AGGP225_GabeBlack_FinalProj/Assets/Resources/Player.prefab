@@ -1189,7 +1189,7 @@ MonoBehaviour:
   m_SynchronizePosition: 1
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
-  m_UseLocal: 1
+  m_UseLocal: 0
 --- !u!114 &7257784636647469071
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1222,6 +1222,7 @@ MonoBehaviour:
   falloutHeight: -15
   isSpectator: 0
   canMove: 1
+  points: 0
   place: {fileID: 8361221565574875722}
   groundCheck: 0
   isChatting: 0

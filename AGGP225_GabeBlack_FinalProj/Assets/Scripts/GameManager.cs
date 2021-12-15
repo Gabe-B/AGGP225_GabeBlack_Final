@@ -10,18 +10,24 @@ public class GameManager : MonoBehaviour
 {
     public GameObject playerPrefab;
     public GameObject playerInstace;
-    public List<GameObject> spawnPoints = new List<GameObject>();
-    List<Player> players = new List<Player>();
     public TMP_InputField input;
     public int score;
+    public List<GameObject> spawnPoints = new List<GameObject>();
+    public List<Player> finished = new List<Player>();
+    public FinishLine fl;
 
-    int numSpectators = 0;
+    public bool roundOver = false;
 
-	public static GameManager instance { get; set; }
+    public int numSpectators = 0;
+
+    public int temp;
+
+    public static GameManager instance { get; set; }
 
     void Awake()
     {
         instance = this;
+        roundOver = false;
     }
 
     // Start is called before the first frame update
@@ -55,18 +61,35 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        foreach(Player p in FindObjectsOfType<Player>())
+        if(fl.entered.Count == PhotonNetwork.CurrentRoom.PlayerCount)
 		{
-            if(p.isSpectator)
+            if(PhotonNetwork.IsMasterClient && !roundOver)
 			{
-                numSpectators++;
-			}
-		}
+                roundOver = true;
 
-        if(numSpectators == PhotonNetwork.CurrentRoom.PlayerCount)
-		{
-            if(PhotonNetwork.IsMasterClient)
-			{
+                if(PhotonManager.instance.rounds == 3)
+				{
+                    bool first = true;
+
+                    foreach (int entry in PhotonManager.instance.players)
+                    {
+                        if (first)
+                        {
+                            temp = entry;
+                            first = false;
+                        }
+                        else
+                        {
+                            if (entry < temp)
+                            {
+                                temp = entry;
+                            }
+                        }
+                    }
+                    PhotonManager.instance.winnerName = "The winner was the one with " + temp + " points!";
+                    PhotonManager.instance.matchDone = true;
+                }
+
                 PhotonNetwork.LoadLevel("Lobby");
 			}
 		}

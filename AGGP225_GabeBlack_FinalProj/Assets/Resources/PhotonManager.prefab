@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 5097063369852566911}
   m_Layer: 0
   m_Name: PhotonManager
-  m_TagString: Untagged
+  m_TagString: PhotonManager
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -44,8 +44,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb81be8386ce49945844e53664f7f6a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  red: {fileID: 0}
+  green: {fileID: 0}
+  blue: {fileID: 0}
+  panel: {fileID: 0}
   username: 
   MAX_PLAYERS: 4
+  RED: 0
+  GREEN: 0
+  BLUE: 0
 --- !u!114 &5097063369852566911
 MonoBehaviour:
   m_ObjectHideFlags: 0

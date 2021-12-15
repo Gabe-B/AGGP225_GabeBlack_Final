@@ -48,7 +48,10 @@ public class Lobby : MonoBehaviour
 
 		gameObject.GetPhotonView().RPC("UpdateNames", RpcTarget.AllBuffered, PhotonManager.instance.username.ToString());
 
-		instance.players.Add(PhotonManager.instance.username.ToString(), 0);
+		if(!PhotonManager.instance.allJoined)
+		{
+			gameObject.GetPhotonView().RPC("UpdatePlayersDict", RpcTarget.AllBuffered);
+		}
 
 		if (PhotonNetwork.IsMasterClient)
 		{
@@ -133,6 +136,10 @@ public class Lobby : MonoBehaviour
 
 							rounds++;
 
+							PhotonManager.instance.rounds = rounds;
+
+							PhotonManager.instance.allJoined = true;
+
 							PhotonNetwork.LoadLevel(level);
 						}
 					}
@@ -141,33 +148,11 @@ public class Lobby : MonoBehaviour
 		}
 		else
 		{
-			if(!reset)
+			if(PhotonManager.instance.matchDone)
 			{
-				KeyValuePair<string, int> temp;
-				bool first = true;
+				winnerText.text = "The winner is: " + PhotonManager.instance.winnerName + "!!!";
 
-				foreach (KeyValuePair<string, int> entry in players)
-				{
-					if (first)
-					{
-						temp = entry;
-						first = false;
-					}
-					else if (entry.Value < temp.Value)
-					{
-						temp = entry;
-					}
-				}
-
-				//winnerText.gameObject.SetActive(true);
-
-				winnerText.text = "The winner is: " + temp.Key + "!!!";
-
-				reset = true;
-			}
-			else
-			{
-				if(PhotonNetwork.IsMasterClient)
+				if (PhotonNetwork.IsMasterClient)
 				{
 					startGameButton.SetActive(false);
 					resetButton.SetActive(true);
@@ -203,17 +188,38 @@ public class Lobby : MonoBehaviour
 		randChosen = false;
 		reset = false;
 
+		PhotonManager.instance.allJoined = false;
+
+		List<KeyValuePair<string, int>> entries = new List<KeyValuePair<string, int>>();
+
 		foreach (KeyValuePair<string, int> entry in players)
 		{
+			entries.Add(entry);
+		}
+
+		for(int i = 0; i < players.Count; i++)
+		{
+			KeyValuePair<string, int> entry = entries[i];
+
 			players[entry.Key.ToString()] = 0;
 		}
 
 		winnerText.gameObject.SetActive(false);
+		resetButton.SetActive(false);
+		startButton.SetActive(true);
+
+		return;
 	}
 
 	[PunRPC]
 	public void UpdateNames(string _username)
 	{
 		names.text += _username + "\n";
+	}
+
+	[PunRPC]
+	public void UpdatePlayersDict()
+	{
+		PhotonManager.instance.players.Add(0);
 	}
 }

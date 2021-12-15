@@ -22,6 +22,13 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 	public int MAX_PLAYERS = 4;
 	public float RED, GREEN, BLUE;
 
+	public string winnerName;
+	public bool matchDone = false;
+	public int rounds;
+
+	public List<int> players = new List<int>();
+	public bool allJoined = false;
+
 	string gameVersion = "1";
 	string gameLevel = "Lobby";
 

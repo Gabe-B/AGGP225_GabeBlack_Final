@@ -28,6 +28,8 @@ public class Player : MonoBehaviour
 	public bool isSpectator = false;
 	public bool canMove = true;
 
+	public int points = 0;
+
 	public TMP_Text place;
 
 	public ExitGames.Client.Photon.Hashtable _Placement = new ExitGames.Client.Photon.Hashtable();
@@ -64,19 +66,20 @@ public class Player : MonoBehaviour
 			rb = gameObject.GetComponent<Rigidbody>();
 			Cursor.lockState = CursorLockMode.Locked;
 			Cursor.visible = false;
+			isSpectator = false;
 		}
 	}
 
 	// Update is called once per frame
 	void Update()
 	{
+		rb.useGravity = false;
+		leftStick = Vector2.zero;
+		rightStick = Vector2.zero;
+		canJump = false;
+
 		if (gameObject.GetPhotonView().IsMine)
 		{
-			rb.useGravity = false;
-			leftStick = Vector2.zero;
-			rightStick = Vector2.zero;
-			canJump = false;
-
 			if (!isSpectator)
 			{
 				if (Input.GetKeyDown(KeyCode.Escape))
@@ -87,9 +90,6 @@ public class Player : MonoBehaviour
 					canMove = false;
 
 					rb.velocity = Vector3.zero;
-
-					rb.useGravity = true;
-					Physics.gravity = new Vector3(0f, playerGrav, 0f);
 				}
 
 				
@@ -120,8 +120,7 @@ public class Player : MonoBehaviour
 
 					if (!groundCheck)
 					{
-						rb.useGravity = true;
-						Physics.gravity = new Vector3(0f, playerGrav, 0f);
+						gameObject.GetPhotonView().RPC("GravRPC", RpcTarget.AllBuffered);
 					}
 					else
 					{
@@ -132,6 +131,7 @@ public class Player : MonoBehaviour
 					{
 						Jump();
 					}
+
 					GetInput();
 					MoveStrafe(leftStick);
 					RotateRight(rightStick.x);
@@ -190,7 +190,7 @@ public class Player : MonoBehaviour
 
 			if (gameObject.transform.position.y <= falloutHeight)
 			{
-				gameObject.transform.position = new Vector3(0f, 1.5f, 0f);
+				gameObject.GetPhotonView().RPC("FallRPC", RpcTarget.AllBuffered);
 			}
 		}
 	}
@@ -254,10 +254,7 @@ public class Player : MonoBehaviour
 
 	void Jump()
 	{
-		if (gameObject.GetPhotonView().IsMine)
-		{
-			rb.AddForce(new Vector3(0, jumpForce, 0), ForceMode.Impulse);
-		}
+		gameObject.GetPhotonView().RPC("JumpRPC", RpcTarget.AllBuffered);
 	}
 
 	void MoveStrafe(Vector2 value)
@@ -317,5 +314,30 @@ public class Player : MonoBehaviour
 		Debug.Log(message);
 
 		ChatHandler.instance.SendMessageToChat(message);
+	}
+
+	[PunRPC]
+	void FallRPC()
+	{
+		gameObject.transform.position = new Vector3(0f, 1.5f, 0f);
+	}
+
+	[PunRPC]
+	void JumpRPC()
+	{
+		if (gameObject.GetPhotonView().IsMine)
+		{
+			rb.AddForce(new Vector3(0, jumpForce, 0), ForceMode.Impulse);
+		}
+	}
+
+	[PunRPC]
+	void GravRPC()
+	{
+		if(gameObject.GetPhotonView().IsMine)
+		{
+			rb.useGravity = true;
+			Physics.gravity = new Vector3(0f, playerGrav, 0f);
+		}
 	}
 }

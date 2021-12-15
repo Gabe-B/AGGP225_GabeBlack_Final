@@ -618,7 +618,7 @@ ScriptsOnlyBuild:
     className: SignalAsset
   - hash:
       serializedVersion: 2
-      Hash: 7b44b265ed3ef5d5c689a09f5e970ce8
+      Hash: c931920aa6af620b151dc70f8b1398df
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Player
@@ -1050,7 +1050,7 @@ ScriptsOnlyBuild:
     className: OnClickInstantiate
   - hash:
       serializedVersion: 2
-      Hash: 13989a46b6f0a69ed998c34e7c2e3bec
+      Hash: 8724273e078e719236dc4b5af3a7ca59
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: GameManager
@@ -1086,7 +1086,7 @@ ScriptsOnlyBuild:
     className: TMP_SubMesh
   - hash:
       serializedVersion: 2
-      Hash: f62a5023574c1fc8432944d88d00a77a
+      Hash: 5446103114a97ee0148865f062daffbd
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: FinishLine
@@ -1236,7 +1236,7 @@ ScriptsOnlyBuild:
     className: SendRateOnSerializeField
   - hash:
       serializedVersion: 2
-      Hash: 36b59e54fd491de4893eb2d24ad21241
+      Hash: 0ec272a6ccaf61e7b1c75cbc80710c40
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: PhotonManager
@@ -1704,7 +1704,7 @@ ScriptsOnlyBuild:
     className: LoadLevelUIForm
   - hash:
       serializedVersion: 2
-      Hash: 37a81435babd8b0a04afb9377cd009fd
+      Hash: 5fa825aa7caf76ce862c6c25b8f23f07
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Lobby
@@ -1834,6 +1834,12 @@ ScriptsOnlyBuild:
     assemblyName: PhotonUnityNetworking.Demos.dll
     namespaceName: Photon.Pun.Demo.Cockpit.Forms
     className: UserIdUiForm
+  - hash:
+      serializedVersion: 2
+      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: Net
   platform: 19
   scenePathNames:
   - Assets/Scenes/MainMenu.unity

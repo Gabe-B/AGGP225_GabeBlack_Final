@@ -6,7 +6,9 @@ using Photon.Pun;
 
 public class FinishLine : MonoBehaviour
 {
-    public int placement = 1;
+    public int placement = 0;
+
+    public List<Player> entered = new List<Player>();
 
     // Start is called before the first frame update
     void Start()
@@ -28,14 +30,19 @@ public class FinishLine : MonoBehaviour
 		{
             if(p.gameObject.GetPhotonView().IsMine)
 			{
-                p.playerCam.gameObject.SetActive(false);
+                p.playerCam.gameObject.GetComponent<Camera>().enabled = false;
                 p.isSpectator = true;
 
-                p._Placement["place"] = placement;
-                PhotonNetwork.LocalPlayer.CustomProperties = p._Placement;
+                PhotonManager.instance.players[placement] += placement;
 
-                p.place.text = PhotonNetwork.LocalPlayer.CustomProperties["place"].ToString();
+                //p._Placement.Add(p.gameObject.GetPhotonView().Owner.NickName, placement);
+
+                p.rb.velocity = Vector3.zero;
             }
+
+            Debug.Log(p.gameObject.GetPhotonView().Owner.NickName);
+
+            entered.Add(p);
 
             placement++;
         }

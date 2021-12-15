@@ -45,6 +45,10 @@ MonoBehaviour:
   - LobbyChatRPC
   - ChangeColor
   - ChatRPC
+  - UpdatePlayersDict
+  - FallRPC
+  - JumpRPC
+  - GravRPC
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1
